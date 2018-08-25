@@ -1,12 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./config');
-
-// Models
-const Counter = require('./models/counter');
-const UniqueCounter = require('./models/unique_counter');
-const MonthCounter = require('./models/month_counter');
-const UniqueMonthCounter = require('./models/unique_month_counter');
+const path = require('path');
 
 const app = express();
 
@@ -16,27 +11,51 @@ mongoose.connection.once('open', () => {
     console.log('Connected to db');
 })
 
-app.use(express.static(path.join(__dirname, 'client')));
+// Models
+const Counter = require('./models/counter');
+const UniqueCounter = require('./models/unique_counter');
+const MonthCounter = require('./models/month_counter');
+const UniqueMonthCounter = require('./models/unique_month_counter');
+const Ip = require('./models/ip');
 
-setInterval(function () {
-    // set the counter_day to 0 
-}, 24 * 60 * 60 * 1000)
+// app.use(express.static(path.join(__dirname, 'client')));
 
-setInterval(function () {
-    // set the counter_month to 0 
-}, 24 * 60 * 60 * 1000 * 30)
 
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + '/client/index.html');
-    let currentDate = new Date();
-    // is unique (request.connection.remoteAddress !== ip)
-    //  true 
-    //  update the unique_counter'by one and add the ip to the database
-    // else
-    // update the counter only
+app.get('/', (req, res) => {
+    let ip_address = req.ip;
+    Ip.findOne({ ip: ip_address }, (err, data) => {
+        if (data) {
+            Counter.update({ id: 1 }, { $inc: { counter: 1 } }).then((data) => {
+                console.log('Updatded data', data);
+            })
+            MonthCounter.update({ id: 1 }, { $inc: { month_counter: 1 } }).then((data) => {
+                console.log('Updatded data', data);
+            })
+        }
+        else {
+            //  update the unique_counter'by one and add the ip to the database
+            UniqueCounter.updateOne({ id: 1 }, { $inc: { unique_counter: 1 } }).then((data) => {
+                console.log('Updatded unique data', data);
+            });
+            UniqueMonthCounter.updateOne({ id: 1 }, { $inc: { unique_month_counter: 1 } }).then((data) => {
+                console.log('Updatded unique month data', data);
+            })
+            Counter.update({ id: 1 }, { $inc: { counter: 1 } }).then((data) => {
+                console.log('Updatded data', data);
+            })
+            MonthCounter.update({ id: 1 }, { $inc: { month_counter: 1 } }).then((data) => {
+                console.log('Updatded data', data);
+            })
+            let new_ip = new Ip({ ip: ip_address });
+            new_ip.save((err, data) => {
+                if (err) throw err;
+                res.send(data);
+            })
+        }
+    })
 })
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on a port of ${PORT}`);
 });

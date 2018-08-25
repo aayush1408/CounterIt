@@ -3,7 +3,8 @@ const { Schema } = mongoose;
 
 // Create the schema
 const counterSchema = new Schema({
-    unique_counter: { type: Number, default: 0 },
+    unique_counter: { type: Number },
+    id: { type: String }
 });
 
 // Export the model

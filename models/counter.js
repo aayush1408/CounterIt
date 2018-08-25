@@ -3,7 +3,8 @@ const { Schema } = mongoose;
 
 // Create the schema
 const counterSchema = new Schema({
-    counter_day: { type: Number, default: 0 },
+    counter: { type: Number },
+    id: { type: String }
 });
 
 // Export the model
