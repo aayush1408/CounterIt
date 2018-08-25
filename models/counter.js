@@ -4,7 +4,8 @@ const { Schema } = mongoose;
 // Create the schema
 const counterSchema = new Schema({
     counter: { type: Number },
-    id: { type: String }
+    id: { type: String },
+    date: { type: Date }
 });
 
 // Export the model

@@ -12,11 +12,11 @@ const mongoURI = `mongodb://${config.username}:${config.password}@ds125372.mlab.
 mongoose.connect(mongoURI)
 mongoose.connection.once('open', () => {
     console.log('Connected to db');
-})
+});
 
-let new_counter = new Counter({ counter: 0, id: '1' });
+let new_counter = new Counter({ counter: 0, id: '1', date: new Date() });
 let new_unique_counter = new UniqueCounter({ unique_counter: 0, id: '1' });
-let new_month_counter = new MonthCounter({ month_counter: 0, id: '1' });
+let new_month_counter = new MonthCounter({ month_counter: 0, id: '1', date: new Date() });
 let new_unique_month_counter = new UniqueMonthCounter({ unique_month_counter: 0, id: '1' });
 
 new_counter.save((err, data) => {

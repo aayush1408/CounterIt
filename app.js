@@ -18,11 +18,29 @@ const MonthCounter = require('./models/month_counter');
 const UniqueMonthCounter = require('./models/unique_month_counter');
 const Ip = require('./models/ip');
 
-// app.use(express.static(path.join(__dirname, 'client')));
-
-
 app.get('/', (req, res) => {
     let ip_address = req.ip;
+    let date = new Date();
+    let current_date = date.getDate();
+    let current_month = date.getMonth();
+    Counter.findOne({ id: 1 }).then((data) => {
+        console.log(data.date.getDate());
+        if (current_date > data.date.getDate()) {
+            Counter.updateOne({ id: 1 }, { $set: { date: date } }).then((data) => {
+                console.log('Updated date', date)
+            })
+        }
+    })
+    MonthCounter.findOne({ id: 1 }).then((data) => {
+        console.log(data.date.getMonth());
+        if (current_month > data.date.getMonth()) {
+            MonthCounter.updateOne({ id: 1 }, { $set: { date: date } }).then((data) => {
+                console.log('Updated data', data);
+            })
+        }
+    })
+    console.log(current_date);
+    console.log(current_month);
     Ip.findOne({ ip: ip_address }, (err, data) => {
         if (data) {
             Counter.update({ id: 1 }, { $inc: { counter: 1 } }).then((data) => {
@@ -52,8 +70,9 @@ app.get('/', (req, res) => {
                 res.send(data);
             })
         }
-    })
-})
+    });
+    res.sendFile(__dirname + '/client/index.html');
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
