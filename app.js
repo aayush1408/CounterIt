@@ -2,8 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./config');
 const path = require('path');
-
+const ejs = require('ejs');
 const app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'client'));
+app.set('view engine', 'ejs');
+
 
 const mongoURI = `mongodb://${config.username}:${config.password}@ds125372.mlab.com:25372/counter1408`;
 mongoose.connect(mongoURI)
@@ -72,6 +77,27 @@ app.get('/', (req, res) => {
         }
     });
     res.sendFile(__dirname + '/client/index.html');
+});
+
+app.get('/counter', (req, res) => {
+    let final = { counter: '', month_counter: '', unique_counter: '', unique_month_counter: '' };
+    Counter.findOne({ id: 1 }, (err, data) => {
+        if (err) throw err;
+        final.counter = data.counter;
+        MonthCounter.findOne({ id: 1 }, (err, data) => {
+            if (err) throw err;
+            final.month_counter = data.month_counter;
+            UniqueCounter.findOne({ id: 1 }, (err, data) => {
+                if (err) throw err;
+                final.unique_counter = data.unique_counter;
+                UniqueMonthCounter.findOne({ id: 1 }, (err, data) => {
+                    if (err) throw err;
+                    final.unique_month_counter = data.unique_month_counter;
+                    res.render('index', { final: final });
+                });
+            });
+        });
+    });
 });
 
 const PORT = process.env.PORT || 5000;
