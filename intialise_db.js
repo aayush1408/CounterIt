@@ -14,7 +14,7 @@ mongoose.connect(mongoURI)
 mongoose.connection.once('open', () => {
     console.log('Connected to db');
 });
-
+// Default values
 let new_counter = new Counter({ counter: 0, id: '1', date: new Date() });
 let new_unique_counter = new UniqueCounter({ unique_counter: 0, id: '1' });
 let new_month_counter = new MonthCounter({ month_counter: 0, id: '1', date: new Date() });
