@@ -14,7 +14,8 @@
 ## Structure of config.js
 ```
 module.exports = {
+    database:'your_mlab_database',
     username:'your_mlab_username',
-    'password':'your_mlab_password'
+    password:'your_mlab_password'
 }
 ```
