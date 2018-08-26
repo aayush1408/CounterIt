@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // Connect to Database
-const mongoURI = `mongodb://${config.username}:${config.password}@ds125372.mlab.com:25372/counter1408`;
+const mongoURI = `mongodb://${config.username}:${config.password}@ds125372.mlab.com:25372/${config.database}`;
 mongoose.connect(mongoURI)
 mongoose.connection.once('open', () => {
     console.log('Connected to db');
